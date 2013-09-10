@@ -92,9 +92,12 @@ module ExceptionNotifier
             subject = compose_subject
             name = @env.nil? ? 'background_exception_notification' : 'exception_notification'
 
+            recipients = @options[:sender_address]
+            recipients = recipients.call if recipients.is_a?(Proc)
+
             headers = {
                 :delivery_method => @options[:delivery_method],
-                :to => @options[:exception_recipients],
+                :to => recipients,
                 :from => @options[:sender_address],
                 :subject => subject,
                 :template_name => name
